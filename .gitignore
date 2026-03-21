@@ -10,3 +10,4 @@ wheels/
 .env
 .ruff_cache
 media
+static

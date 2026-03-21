@@ -30,6 +30,7 @@ ENV = os.getenv("ENV", "dev")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+
 if not SECRET_KEY:
     raise ValueError("SECRET_KEY is not set in the environment variables.")
 
@@ -46,6 +47,14 @@ if ENV == "prod":
     ]
     ALLOWED_HOSTS = ["apivideoflix.hanisch-dev.de", "127.0.0.1", "localhost"]
     STATIC_URL = "/var/www/videoflix/static/"
+    CSRF_ENV = os.environ.get("CSRF_TRUSTED_ORIGINS")
+    if not CSRF_ENV:
+        raise ValueError(
+            "CSRF_TRUSTED_ORIGINS is not set in the environment variables."
+        )
+
+    CSRF_TRUSTED_ORIGINS = CSRF_ENV.split(",")
+
 else:
     DEBUG = True
     MEDIA_ROOT = os.path.join(BASE_DIR, "media")
@@ -70,12 +79,14 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django_rq",
     "corsheaders",
     "rest_framework",
 ]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -110,11 +121,16 @@ WSGI_APPLICATION = "core.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": os.environ.get("DB_NAME", default="videoflix_db"),
+        "USER": os.environ.get("DB_USER", default="videoflix_user"),
+        "PASSWORD": os.environ.get(
+            "DB_PASSWORD", default="supersecretpassword"
+        ),
+        "HOST": os.environ.get("DB_HOST", default="db"),
+        "PORT": os.environ.get("DB_PORT", default=5432),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
@@ -152,3 +168,29 @@ REST_FRAMEWORK = {
         "rest_framework.permissions.IsAuthenticated",
     ],
 }
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": os.environ.get(
+            "REDIS_LOCATION", default="redis://redis:6379/1"
+        ),
+        "OPTIONS": {"CLIENT_CLASS": "django_redis.client.DefaultClient"},
+        "KEY_PREFIX": "videoflix",
+    }
+}
+
+RQ_QUEUES = {
+    "default": {
+        "HOST": os.environ.get("REDIS_HOST", default="redis"),
+        "PORT": os.environ.get("REDIS_PORT", default=6379),
+        "DB": os.environ.get("REDIS_DB", default=0),
+        "DEFAULT_TIMEOUT": 900,
+        "REDIS_CLIENT_KWARGS": {},
+    },
+}
+
+
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
+
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"

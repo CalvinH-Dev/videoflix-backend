@@ -1,0 +1,31 @@
+[project]
+name = "videoflix-backend"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "django>=6.0.3",
+    "django-cors-headers>=4.9.0",
+    "djangorestframework>=3.17.0",
+    "python-dotenv>=1.2.2",
+]
+
+[dependency-groups]
+dev = ["ruff>=0.15.6"]
+
+
+[tool.ruff]
+line-length = 79
+target-version = "py38"
+indent-width = 4
+
+exclude = [".git", "__pycache__", "build", "dist", "venv"]
+
+[tool.ruff.lint]
+select = ["E", "F"]
+ignore = []
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"

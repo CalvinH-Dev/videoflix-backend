@@ -14,9 +14,19 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+
 from django.contrib import admin
 from django.urls import path
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
+
+class HealthCheckView(APIView):
+    def get(self, request):
+        return Response({"status": "ok"})
+
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path("admin/", admin.site.urls),
+    path("", HealthCheckView.as_view()),
 ]

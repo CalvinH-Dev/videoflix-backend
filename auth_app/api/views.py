@@ -1,13 +1,9 @@
-from django.contrib.auth.models import User
-from django.utils.http import urlsafe_base64_decode
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
-from rest_framework.utils.serializer_helpers import force_str
 from rest_framework.views import APIView, status
 
 from auth_app.api.helpers import decode_uid, get_activation, get_user
 from auth_app.api.serializers import RegistrationSerializer
-from auth_app.models import ActivationToken
 
 
 class RegistrationView(APIView):

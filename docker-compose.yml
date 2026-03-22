@@ -1,5 +1,4 @@
 services:
-
   db:
     image: postgres:latest
     container_name: videoflix_database
@@ -9,6 +8,8 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
     volumes:
       - postgres_data:/var/lib/postgresql
+    ports:
+      - "5432:5432"
 
   redis:
     image: redis:latest
@@ -34,9 +35,6 @@ services:
     depends_on:
       - db
       - redis
-
-
-
 
 volumes:
   postgres_data:

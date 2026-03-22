@@ -8,6 +8,7 @@ from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
 
 from auth_app.api.tasks import send_activation_email
+from auth_app.models import ActivationToken
 from core.redis_client import get_connection, get_queue
 
 q = get_queue()
@@ -20,4 +21,5 @@ def send_activation_on_register(sender, instance, created, **kwargs):
         token = secrets.token_urlsafe(32)
         uid = urlsafe_base64_encode(force_bytes(instance.pk))
 
+        ActivationToken.objects.create(user=instance, token=token)
         q.enqueue(send_activation_email, instance.email, uid, token)

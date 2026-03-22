@@ -1,11 +1,12 @@
+from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 
-FRONTEND_URL = "http://localhost:8000"
 
-
-def send_activation_email(email, uid, token, domain):
-    activation_link = f"{FRONTEND_URL}/api/activate/{uid}/{token}/"
+def send_activation_email(email, uid, token):
+    activation_link = (
+        f"{settings.EMAIL_DOMAIN_URL.rstrip('/')}/api/activate/{uid}/{token}/"
+    )
 
     html_content = render_to_string(
         "emails/activation.html",
@@ -18,7 +19,7 @@ def send_activation_email(email, uid, token, domain):
     mail = EmailMultiAlternatives(
         subject="Aktiviere deinen Videoflix Account",
         body=f"Aktiviere deinen Account: {activation_link}",
-        from_email="noreply@videoflix.de",
+        from_email=settings.DEFAULT_FROM_EMAIL,
         to=[email],
     )
     mail.attach_alternative(html_content, "text/html")

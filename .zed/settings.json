@@ -1,5 +1,18 @@
 {
   "languages": {
+    "HTML": {
+      "format_on_save": "on",
+      "prettier": {
+        "allowed": false,
+      },
+      "formatter": [
+        {
+          "language_server": {
+            "name": "oxfmt",
+          },
+        },
+      ],
+    },
     "Python": {
       "language_servers": ["basedpyright", "ruff"],
       "format_on_save": "on",

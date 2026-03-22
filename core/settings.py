@@ -82,7 +82,7 @@ INSTALLED_APPS = [
     "django_rq",
     "corsheaders",
     "rest_framework",
-    "auth_app",
+    "auth_app.apps.AuthAppConfig",
 ]
 
 MIDDLEWARE = [

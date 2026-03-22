@@ -82,6 +82,7 @@ INSTALLED_APPS = [
     "django_rq",
     "corsheaders",
     "rest_framework",
+    "auth_app",
 ]
 
 MIDDLEWARE = [
@@ -164,6 +165,9 @@ USE_TZ = True
 
 
 REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "core.authentication.CookieJWTAuthentication",
+    ],
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticated",
     ],

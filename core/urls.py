@@ -16,7 +16,7 @@ Including another URLconf
 """
 
 from django.contrib import admin
-from django.urls import path
+from django.urls import include, path
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -32,4 +32,5 @@ class HealthCheckView(APIView):
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", HealthCheckView.as_view()),
+    path("api/", include("auth_app.api.urls")),
 ]

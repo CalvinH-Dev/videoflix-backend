@@ -45,6 +45,7 @@ if ENV == "prod":
         "http://videoflix.hanisch-dev.de",
         "https://videoflix.hanisch-dev.de",
     ]
+    FRONTEND_URL = "https://videoflix.hanisch-dev.de"
     ALLOWED_HOSTS = ["apivideoflix.hanisch-dev.de", "127.0.0.1", "localhost"]
     STATIC_URL = "/var/www/videoflix/static/"
     CSRF_ENV = os.environ.get("CSRF_TRUSTED_ORIGINS")
@@ -65,6 +66,7 @@ else:
         "http://127.0.0.1:57391",
         "http://localhost:57391",
     ]
+    FRONTEND_URL = "http://127.0.0.1:57391"
     ALLOWED_HOSTS = []
     STATIC_URL = "static/"
 

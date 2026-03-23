@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.contrib.auth.models import User
 from jwt.exceptions import DecodeError
 from rest_framework.generics import CreateAPIView
 from rest_framework.permissions import AllowAny
@@ -12,11 +13,18 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
 )
 
-from auth_app.api.helpers import decode_uid, get_activation, get_user
+from auth_app.api.helpers import (
+    create_token_and_uid_for_user,
+    decode_uid,
+    get_activation,
+    get_user,
+)
 from auth_app.api.serializers import (
     CustomTokenObtainPairSerializer,
     RegistrationSerializer,
 )
+from auth_app.api.tasks import send_password_reset_email
+from core.redis_client import get_queue
 
 
 class RegistrationView(CreateAPIView):
@@ -186,3 +194,37 @@ class CookieTokenRefreshView(TokenRefreshView):
             samesite="Lax",
         )
         return response
+
+
+class ResetPasswordView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request: Request, *args, **kwargs) -> Response:
+        email = request.data.get("email")
+
+        if not email:
+            return Response(
+                {"detail": "E-Mail-Adresse fehlt."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        response = {
+            "detail": "Falls ein Account existiert, wurde eine E-Mail versendet."
+        }
+
+        user = User.objects.filter(email=email).first()
+        if not user:
+            return Response(
+                response,
+                status=status.HTTP_200_OK,
+            )
+
+        token, uid = create_token_and_uid_for_user(user)
+
+        q = get_queue()
+        q.enqueue(send_password_reset_email, email, uid, token)
+
+        return Response(
+            response,
+            status=status.HTTP_200_OK,
+        )

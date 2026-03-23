@@ -14,7 +14,10 @@ class RegistrationSerializer(serializers.ModelSerializer):
             "password",
             "confirmed_password",
         ]
-        extra_kwargs = {"password": {"write_only": True}}
+        extra_kwargs = {
+            "password": {"write_only": True, "required": True},
+            "email": {"required": True},
+        }
 
     def validate_confirmed_password(self, value):
         password = self.initial_data.get("password")

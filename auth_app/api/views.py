@@ -1,5 +1,7 @@
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.http import urlsafe_base64_decode
 from jwt.exceptions import DecodeError
 from rest_framework.generics import CreateAPIView
 from rest_framework.permissions import AllowAny
@@ -226,5 +228,56 @@ class ResetPasswordView(APIView):
 
         return Response(
             response,
+            status=status.HTTP_200_OK,
+        )
+
+
+class PasswordConfirmView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(
+        self, request: Request, uidb64: str, token: str, *args, **kwargs
+    ) -> Response:
+        new_password = request.data.get("new_password")
+        confirm_password = request.data.get("confirm_password")
+
+        if not new_password or not confirm_password:
+            return Response(
+                {"detail": "Bitte beide Felder ausfüllen."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if new_password != confirm_password:
+            return Response(
+                {"detail": "Passwörter stimmen nicht überein."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        try:
+            uid = urlsafe_base64_decode(uidb64).decode()
+        except (ValueError, OverflowError):
+            return Response(
+                {"detail": "Ungültiger Link."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        user = User.objects.filter(pk=uid).first()
+        if not user:
+            return Response(
+                {"detail": "Ungültiger Link."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if not default_token_generator.check_token(user, token):
+            return Response(
+                {"detail": "Token ungültig oder abgelaufen."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        user.set_password(new_password)
+        user.save()
+
+        return Response(
+            {"detail": "Passwort erfolgreich geändert."},
             status=status.HTTP_200_OK,
         )

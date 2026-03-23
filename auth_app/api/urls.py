@@ -5,6 +5,7 @@ from auth_app.api.views import (
     CookieTokenRefreshView,
     LoginView,
     LogoutView,
+    PasswordConfirmView,
     RegistrationView,
     ResetPasswordView,
 )
@@ -24,6 +25,6 @@ urlpatterns = [
         name="token_refresh",
     ),
     path(
-        "password_reset/", ResetPasswordView.as_view(), name="reset_password"
+        "password_reset/", ResetPasswordView.as_view(), name="reset-password"
     ),
 ]

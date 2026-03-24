@@ -26,7 +26,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv()
 
 SECRET_KEY = os.getenv("SECRET_KEY")
-DEBUG = True
+DEBUG = os.getenv("DEBUG", "True").lower() in ["true", "True"]
 
 if not SECRET_KEY:
     raise ValueError("SECRET_KEY is not set in the environment variables.")
@@ -54,7 +54,7 @@ CSRF_TRUSTED_ORIGINS = (
     [origin.strip() for origin in CSRF_ENV.split(",")] if CSRF_ENV else []
 )
 
-COOKIE_SECURE = True
+COOKIE_SECURE = not DEBUG
 CORS_ALLOW_CREDENTIALS = True
 
 

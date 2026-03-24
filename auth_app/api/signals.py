@@ -14,7 +14,22 @@ except Exception:
 
 
 @receiver(post_save, sender=User)
-def send_activation_on_register(sender, instance, created, **kwargs):
+def send_activation_on_register(
+    sender, instance: User, created: bool, **kwargs
+):
+    """
+    Send an activation email to the user after registration.
+
+    This function is triggered after a User instance is saved. If the user
+    was newly created and is inactive, an activation token is generated
+    and a task is enqueued to send the activation email.
+
+    Args:
+        sender: The model class (User) sending the signal.
+        instance: The User instance that was saved.
+        created: Boolean indicating whether a new instance was created.
+        **kwargs: Additional keyword arguments.
+    """
     if created and not instance.is_active:
         token, uid = create_token_and_uid_for_user(instance)
         ActivationToken.objects.create(user=instance, token=token)

@@ -3,7 +3,15 @@ from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 
 
-def send_activation_email(email, uid, token):
+def send_activation_email(email: str, uid: str, token: str):
+    """
+    Send an account activation email to the user.
+
+    Args:
+        email: Recipient's email address.
+        uid: Base64-encoded user ID.
+        token: Activation token.
+    """
     activation_link = (
         f"{settings.EMAIL_DOMAIN_URL.rstrip('/')}/api/activate/{uid}/{token}/"
     )
@@ -17,8 +25,8 @@ def send_activation_email(email, uid, token):
     )
 
     mail = EmailMultiAlternatives(
-        subject="Aktiviere deinen Videoflix Account",
-        body=f"Aktiviere deinen Account: {activation_link}",
+        subject="Activate your Videoflix Account",
+        body=f"Activate your account: {activation_link}",
         from_email=settings.DEFAULT_FROM_EMAIL,
         to=[email],
     )
@@ -26,7 +34,15 @@ def send_activation_email(email, uid, token):
     mail.send()
 
 
-def send_password_reset_email(email, uid, token):
+def send_password_reset_email(email: str, uid: str, token: str):
+    """
+    Send a password reset email to the user.
+
+    Args:
+        email: Recipient's email address.
+        uid: Base64-encoded user ID.
+        token: Password reset token.
+    """
     reset_link = f"{settings.FRONTEND_URL.rstrip('/')}/pages/auth/confirm_password.html?uid={uid}&token={token}"
 
     html_content = render_to_string(
@@ -38,8 +54,8 @@ def send_password_reset_email(email, uid, token):
     )
 
     mail = EmailMultiAlternatives(
-        subject="Setze dein Videoflix Passwort zurück",
-        body=f"Setze dein Passwort zurück deinen Account: {reset_link}",
+        subject="Reset your Videoflix Password",
+        body=f"Reset your account password: {reset_link}",
         from_email=settings.DEFAULT_FROM_EMAIL,
         to=[email],
     )

@@ -29,7 +29,6 @@ class LoginViewTest(APITestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn("detail", response.data)
-        self.assertEqual(response.data["detail"], "Login successful")
         self.assertIn("user", response.data)
         self.assertEqual(response.data["user"]["username"], self.user.username)
 

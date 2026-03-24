@@ -13,7 +13,19 @@ except Exception:
 
 
 @receiver(post_save, sender=Video)
-def on_video_created(sender, instance, created, **kwargs):
+def on_video_created(sender, instance: Video, created: bool, **kwargs):
+    """
+    Handle post-save actions when a Video instance is created.
+
+    This includes setting a default thumbnail path if missing
+    and enqueuing an HLS conversion task for the video file.
+
+    Args:
+        sender: The model class (Video) sending the signal.
+        instance: The Video instance that was saved.
+        created: Boolean indicating whether a new instance was created.
+        **kwargs: Additional keyword arguments.
+    """
     if not created:
         return
 

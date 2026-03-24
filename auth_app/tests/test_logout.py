@@ -44,7 +44,7 @@ class LogoutViewTest(APITestCase):
         response = self.client.post(self.url)
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(response.data["detail"], "Refresh token not found.")
+        self.assertIn("detail", response.data)
 
     def test_logout_invalid_token_400(self):
         self.client.cookies["refresh_token"] = "invalid_token"

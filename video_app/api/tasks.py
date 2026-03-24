@@ -3,7 +3,7 @@ import subprocess
 
 from django.conf import settings
 
-from video_app.api.helpers import get_video_duration
+from video_app.api.helpers import get_video_dimensions, get_video_duration
 
 
 def generate_thumbnail(video_id, input_path, duration):
@@ -33,10 +33,12 @@ def generate_thumbnail(video_id, input_path, duration):
 
 def generate_hls(video_id, input_path):
     resolutions = {
-        "1080p": ("1920x1080", "5000k"),
-        "720p": ("1280x720", "2800k"),
-        "480p": ("854x480", "1400k"),
+        "1080p": ("1080", "5000k"),
+        "720p": ("720", "2800k"),
+        "480p": ("480", "1400k"),
     }
+    width, height = get_video_dimensions(input_path)
+    is_portrait = height > width
 
     for res_name, (size, bitrate) in resolutions.items():
         output_dir = os.path.join(
@@ -44,13 +46,15 @@ def generate_hls(video_id, input_path):
         )
         os.makedirs(output_dir, exist_ok=True)
 
+        scale = f"scale={size}:-2" if is_portrait else f"scale=-2:{size}"
+
         result = subprocess.run(
             [
                 "ffmpeg",
                 "-i",
                 input_path,
-                "-s",
-                size,
+                "-vf",
+                scale,
                 "-b:v",
                 bitrate,
                 "-hls_time",
@@ -59,13 +63,11 @@ def generate_hls(video_id, input_path):
                 "0",
                 "-f",
                 "hls",
-                f"{output_dir}/index.m3u8",
+                os.path.join(output_dir, "index.m3u8"),
             ]
         )
-
         if result.returncode != 0:
             return False
-
     return True
 
 

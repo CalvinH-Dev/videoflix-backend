@@ -8,7 +8,7 @@ from auth_app.models import ActivationToken
 from core.redis_client import get_queue
 
 try:
-    q = get_queue()
+    q = get_queue("high")
 except Exception:
     q = None
 
@@ -17,7 +17,6 @@ except Exception:
 def send_activation_on_register(sender, instance, created, **kwargs):
     if created and not instance.is_active:
         token, uid = create_token_and_uid_for_user(instance)
-
         ActivationToken.objects.create(user=instance, token=token)
-        queue = q or get_queue()
+        queue = q or get_queue("high")
         queue.enqueue(send_activation_email, instance.email, uid, token)

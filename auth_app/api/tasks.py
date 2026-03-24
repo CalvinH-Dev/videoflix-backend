@@ -21,6 +21,8 @@ def send_activation_email(email: str, uid: str, token: str):
         context={
             "activation_link": activation_link,
             "email": email,
+            "imprint_name": settings.IMPRINT_NAME,
+            "imprint_url": settings.IMPRINT_URL,
         },
     )
 
@@ -50,6 +52,8 @@ def send_password_reset_email(email: str, uid: str, token: str):
         context={
             "reset_link": reset_link,
             "email": email,
+            "imprint_name": settings.IMPRINT_NAME,
+            "imprint_url": settings.IMPRINT_URL,
         },
     )
 

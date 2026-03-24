@@ -40,5 +40,10 @@ EOF
 
 python manage.py rqworker high default &
 
-# exec gunicorn core.wsgi:application --bind 0.0.0.0:8000 --reload
-exec python manage.py runserver 0.0.0.0:8000
+if [ "$DEBUG" = "False" ]; then
+    echo "Starte Gunicorn (Production)..."
+    exec gunicorn core.wsgi:application --bind 0.0.0.0:8000
+else
+    echo "Starte Django Devserver (Development)..."
+    exec python manage.py runserver 0.0.0.0:8000
+fi

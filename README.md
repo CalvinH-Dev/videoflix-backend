@@ -62,6 +62,7 @@ SECRET_KEY=your-generated-secret-key-here
 ```
 
 Configure email and database credentials in `.env`.
+Set DEBUG variable to False on production, otherwise True.
 
 ### 🐳 Using Docker
 

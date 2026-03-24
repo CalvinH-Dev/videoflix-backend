@@ -19,7 +19,11 @@ from auth_app.api.helpers import (
     create_token_and_uid_for_user,
     decode_uid,
     get_activation,
+    get_passwords,
     get_user,
+    get_user_from_uid,
+    validate_passwords,
+    validate_token,
 )
 from auth_app.api.serializers import (
     CustomTokenObtainPairSerializer,
@@ -223,7 +227,7 @@ class ResetPasswordView(APIView):
 
         token, uid = create_token_and_uid_for_user(user)
 
-        q = get_queue()
+        q = get_queue("high")
         q.enqueue(send_password_reset_email, email, uid, token)
 
         return Response(
@@ -238,41 +242,18 @@ class PasswordConfirmView(APIView):
     def post(
         self, request: Request, uidb64: str, token: str, *args, **kwargs
     ) -> Response:
-        new_password = request.data.get("new_password")
-        confirm_password = request.data.get("confirm_password")
 
-        if not new_password or not confirm_password:
-            return Response(
-                {"detail": "Bitte beide Felder ausfüllen."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+        new_password, confirm_password = get_passwords(request.data)
 
-        if new_password != confirm_password:
-            return Response(
-                {"detail": "Passwörter stimmen nicht überein."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+        error = validate_passwords(new_password, confirm_password)
+        if error:
+            return error
 
-        try:
-            uid = urlsafe_base64_decode(uidb64).decode()
-        except (ValueError, OverflowError):
-            return Response(
-                {"detail": "Ungültiger Link."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+        user = get_user_from_uid(uidb64)
 
-        user = User.objects.filter(pk=uid).first()
-        if not user:
-            return Response(
-                {"detail": "Ungültiger Link."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        if not default_token_generator.check_token(user, token):
-            return Response(
-                {"detail": "Token ungültig oder abgelaufen."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+        error = validate_token(user, token)
+        if error:
+            return error
 
         user.set_password(new_password)
         user.save()

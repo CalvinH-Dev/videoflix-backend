@@ -3,7 +3,7 @@ from django.urls import path
 from .views import M3U8View, SegmentView, VideoListView
 
 urlpatterns = [
-    path("video/", VideoListView.as_view()),
+    path("video/", VideoListView.as_view(), name="video-list"),
     path(
         "video/<int:movie_id>/<str:resolution>/index.m3u8", M3U8View.as_view()
     ),

@@ -1,4 +1,5 @@
-from datetime import timedelta
+from datetime import datetime, timedelta
+from typing import cast
 
 from django.contrib.auth.models import User
 from django.db import models
@@ -13,4 +14,9 @@ class ActivationToken(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def is_expired(self) -> bool:
-        return timezone.now() > self.created_at + timedelta(hours=24)  # type: ignore
+        created_at = cast(datetime | None, self.created_at)
+
+        if not created_at:
+            return False
+
+        return timezone.now() > created_at + timedelta(hours=24)

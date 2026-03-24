@@ -24,51 +24,35 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 load_dotenv()
+
 SECRET_KEY = os.getenv("SECRET_KEY")
-ENV = os.getenv("ENV", "dev")
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
+DEBUG = os.getenv("DEBUG", "True").lower() in ["true", "True"]
 
 if not SECRET_KEY:
     raise ValueError("SECRET_KEY is not set in the environment variables.")
 
+MEDIA_ROOT = os.getenv("MEDIA_ROOT", os.path.join(BASE_DIR, "media"))
+MEDIA_URL = os.getenv("MEDIA_URL", "/media/")
 
-# SECURITY WARNING: don't run with debug turned on in production!
+STATIC_URL = os.getenv("STATIC_URL", "static/")
 
-if ENV == "prod":
-    DEBUG = False
-    MEDIA_ROOT = "/var/www/videoflix/media/"
-    MEDIA_URL = "/media/"
-    CORS_ALLOWED_ORIGINS = [
-        "http://videoflix.hanisch-dev.de",
-        "https://videoflix.hanisch-dev.de",
-    ]
-    FRONTEND_URL = "https://videoflix.hanisch-dev.de"
-    ALLOWED_HOSTS = ["apivideoflix.hanisch-dev.de", "127.0.0.1", "localhost"]
-    STATIC_URL = "/var/www/videoflix/static/"
-    CSRF_ENV = os.environ.get("CSRF_TRUSTED_ORIGINS")
-    if not CSRF_ENV:
-        raise ValueError(
-            "CSRF_TRUSTED_ORIGINS is not set in the environment variables."
-        )
+FRONTEND_URL = os.getenv("FRONTEND_URL")
 
-    CSRF_TRUSTED_ORIGINS = CSRF_ENV.split(",")
+CORS_ALLOWED_ORIGINS = os.getenv("CORS_ALLOWED_ORIGINS", "")
+CORS_ALLOWED_ORIGINS = [url.strip() for url in CORS_ALLOWED_ORIGINS.split(",")]
 
-else:
-    DEBUG = True
-    MEDIA_ROOT = os.path.join(BASE_DIR, "media")
-    MEDIA_URL = "/media/"
-    CORS_ALLOWED_ORIGINS = [
-        "http://127.0.0.1:5500",
-        "http://localhost:5173",
-        "http://127.0.0.1:57391",
-        "http://localhost:57391",
-    ]
-    FRONTEND_URL = "http://127.0.0.1:57391"
-    ALLOWED_HOSTS = []
-    STATIC_URL = "static/"
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "")
+ALLOWED_HOSTS = [h.strip() for h in ALLOWED_HOSTS.split(",")]
+
+CSRF_ENV = os.getenv("CSRF_TRUSTED_ORIGINS")
+if not DEBUG and not CSRF_ENV:
+    raise ValueError(
+        "CSRF_TRUSTED_ORIGINS must be set in production environment variables."
+    )
+
+CSRF_TRUSTED_ORIGINS = (
+    [origin.strip() for origin in CSRF_ENV.split(",")] if CSRF_ENV else []
+)
 
 COOKIE_SECURE = not DEBUG
 CORS_ALLOW_CREDENTIALS = True

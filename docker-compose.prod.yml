@@ -1,0 +1,4 @@
+services:
+    web:
+        volumes:
+            - /var/www/videoflix/media:/app/media

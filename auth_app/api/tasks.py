@@ -27,7 +27,7 @@ def send_activation_email(email, uid, token):
 
 
 def send_password_reset_email(email, uid, token):
-    reset_link = f"{settings.FRONTEND_URL.rstrip('/')}/pages/auth/confirm_password.html?uid={uid}&token={token}/"
+    reset_link = f"{settings.FRONTEND_URL.rstrip('/')}/pages/auth/confirm_password.html?uid={uid}&token={token}"
 
     html_content = render_to_string(
         "emails/password_reset.html",

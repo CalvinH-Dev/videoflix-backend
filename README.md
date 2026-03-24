@@ -26,26 +26,7 @@ Videoflix enables:
 
 ---
 
-## 🚀 Setup Option 1 — using `uv` (uv Toolchain)
-
-This option uses **uv** to manage your virtual environment and run your Django app.
-
-### 🛠️ Prerequisites
-
-Make sure **uv** is installed and available in your shell. Node.js ≥ 22 is required for frontend development (optional).
-
-### 📦 Install Dependencies
-
-```bash
-uv sync
-```
-
-### 📁 Activate Environment
-
-```bash
-source .venv/bin/activate     # macOS / Linux
-.venv\Scripts\activate         # Windows
-```
+## 🚀 Setup
 
 ### 🔐 Environment Configuration
 

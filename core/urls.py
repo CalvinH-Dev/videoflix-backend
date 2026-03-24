@@ -15,6 +15,8 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 
+from django.conf import settings
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
 from rest_framework.permissions import AllowAny
@@ -33,4 +35,4 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("", HealthCheckView.as_view()),
     path("api/", include("auth_app.api.urls")),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -59,7 +59,7 @@ if ENV == "prod":
 else:
     DEBUG = True
     MEDIA_ROOT = os.path.join(BASE_DIR, "media")
-    MEDIA_URL = "/"
+    MEDIA_URL = "/media/"
     CORS_ALLOWED_ORIGINS = [
         "http://127.0.0.1:5500",
         "http://localhost:5173",
@@ -88,6 +88,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "rest_framework_simplejwt.token_blacklist",
     "auth_app.apps.AuthAppConfig",
+    "video_app.apps.VideoAppConfig",
 ]
 
 MIDDLEWARE = [

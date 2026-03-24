@@ -13,7 +13,14 @@ except Exception:
 
 
 @receiver(post_save, sender=Video)
-def start_hls_conversion(sender, instance, created, **kwargs):
-    if created and instance.original_file:
+def on_video_created(sender, instance, created, **kwargs):
+    if not created:
+        return
+
+    if not instance.thumbnail:
+        instance.thumbnail = f"thumbnail/{instance.pk}.webp"
+        instance.save()
+
+    if instance.original_file:
         queue = q or get_queue()
         queue.enqueue(convert_to_hls, instance.id)

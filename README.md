@@ -186,6 +186,8 @@ docker compose exec web python manage.py test
 docker compose down -v
 ```
 
+There are also bash scripts for docker production run/reset containers, to use the docker-compose.prod.yml file, too.
+
 ---
 
 ## 📚 Quick Reference

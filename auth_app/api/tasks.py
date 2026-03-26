@@ -2,6 +2,8 @@ from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 
+logo_url = f"{settings.FRONTEND_URL.rstrip('/')}/assets/img/Logo.png"
+
 
 def send_activation_email(email: str, uid: str, token: str):
     """
@@ -23,6 +25,7 @@ def send_activation_email(email: str, uid: str, token: str):
             "email": email,
             "imprint_name": settings.IMPRINT_NAME,
             "imprint_url": settings.IMPRINT_URL,
+            "logo_url": logo_url,
         },
     )
 

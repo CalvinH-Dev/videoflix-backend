@@ -2,7 +2,9 @@ from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 
-logo_url = f"{settings.FRONTEND_URL.rstrip('/')}/assets/img/Logo.png"
+from auth_app.api.helpers import build_frontend_url
+
+logo_url = build_frontend_url("/assets/img/Logo.png")
 
 
 def send_activation_email(email: str, uid: str, token: str):
@@ -14,8 +16,9 @@ def send_activation_email(email: str, uid: str, token: str):
         uid: Base64-encoded user ID.
         token: Activation token.
     """
-    activation_link = (
-        f"{settings.EMAIL_DOMAIN_URL.rstrip('/')}/api/activate/{uid}/{token}/"
+
+    activation_link = build_frontend_url(
+        "pages/auth/activate.html", uid=uid, token=token
     )
 
     html_content = render_to_string(
@@ -48,7 +51,9 @@ def send_password_reset_email(email: str, uid: str, token: str):
         uid: Base64-encoded user ID.
         token: Password reset token.
     """
-    reset_link = f"{settings.FRONTEND_URL.rstrip('/')}/pages/auth/confirm_password.html?uid={uid}&token={token}"
+    reset_link = build_frontend_url(
+        "pages/auth/confirm_password.html", uid=uid, token=token
+    )
 
     html_content = render_to_string(
         "emails/password_reset.html",

@@ -154,6 +154,16 @@ def validate_token(user: User | None, token: str) -> Response | None:
 
 
 def build_frontend_url(path: str, **params) -> str:
+    """
+    Construct a full frontend URL with optional query parameters.
+
+    Args:
+        path: Relative path on the frontend (e.g., "reset-password/").
+        **params: Key-value pairs to include as query parameters.
+
+    Returns:
+        Full URL string pointing to the frontend with encoded query parameters.
+    """
     base_url = settings.FRONTEND_URL.rstrip("/")
     url = f"{base_url}/{path.lstrip('/')}"
 

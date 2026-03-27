@@ -34,6 +34,7 @@ if not SECRET_KEY:
 MEDIA_ROOT = os.getenv("MEDIA_ROOT", os.path.join(BASE_DIR, "media"))
 MEDIA_URL = os.getenv("MEDIA_URL", "/media/")
 
+STATIC_ROOT = os.getenv("STATIC_ROOT", os.path.join(BASE_DIR, "static"))
 STATIC_URL = os.getenv("STATIC_URL", "static/")
 
 FRONTEND_URL = os.getenv("FRONTEND_URL")
@@ -191,8 +192,6 @@ RQ_QUEUES = {
     },
 }
 
-
-STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 

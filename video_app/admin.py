@@ -17,7 +17,12 @@ class VideoAdmin(admin.ModelAdmin):
     ]
     list_filter = ["hls_ready", "category"]
     search_fields = ["title", "description"]
-    readonly_fields = ["hls_ready", "created_at", "thumbnail_preview"]
+    readonly_fields = [
+        "thumbnail",
+        "hls_ready",
+        "created_at",
+        "thumbnail_preview",
+    ]
 
     def thumbnail_preview(self, obj):
         if obj.thumbnail:

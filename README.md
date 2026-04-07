@@ -28,6 +28,8 @@ Videoflix enables:
 
 ## 🚀 Setup
 
+First, clone this repo using Git.
+
 ### 🔐 Environment Configuration
 
 Create your environment file from the template:

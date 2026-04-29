@@ -32,7 +32,7 @@ class HealthCheckView(APIView):
 
 
 urlpatterns = [
-    path("admin", admin.site.urls),
+    path("admin/", admin.site.urls),
     path("api/health", HealthCheckView.as_view()),
     path("api/", include("auth_app.api.urls")),
     path("api/", include("video_app.api.urls")),

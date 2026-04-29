@@ -7,7 +7,7 @@ WORKDIR /app
 
 RUN apk update && \
     apk add --no-cache --upgrade bash && \
-    apk add --no-cache postgresql-client ffmpeg && \
+    apk add --no-cache postgresql-client ffmpeg curl && \
     apk add --no-cache --virtual .build-deps gcc musl-dev postgresql-dev
 
 COPY requirements.txt .

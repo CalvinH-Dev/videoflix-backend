@@ -34,7 +34,7 @@ services:
     volumes:
       - .:/app
       - /var/www/videoflix/media:/app/media
-      - videoflix_static:/app/static
+      - /var/www/videoflix/static:/var/www/videoflix/static
     ports:
       - 8000
     environment:

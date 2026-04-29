@@ -10,6 +10,12 @@ services:
       - postgres_data:/var/lib/postgresql
     ports:
       - "${DB_PORT}:5432"
+    deploy:
+      resources:
+        limits:
+          memory: 1g
+        reservations:
+          memory: 256m
 
   redis:
     image: redis:latest
@@ -36,6 +42,13 @@ services:
     depends_on:
       - db
       - redis
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 256m
+        reservations:
+          memory: 64m
 
 volumes:
   postgres_data:
